@@ -23,7 +23,7 @@ div.main {
 }
 
 button {
-  margin: 30% auto;
+  margin: 350px auto;
   display: block;
   padding: 1em;
   border-radius: 1em;
@@ -48,4 +48,5 @@ div.guidance {
 div.guidance img, div.guidance p {
   display: block;
   margin: auto;
+  text-align: center;
 }
