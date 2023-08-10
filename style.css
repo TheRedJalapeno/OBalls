@@ -1,0 +1,31 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+div.main {
+  
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  margin: auto;
+}
+
+#viewport {
+  display: block;
+  width: 100%;
+  background: #eee;
+  aspect-ratio: auto;
+}
+
+button {
+  margin: 20px auto;
+  display: block;
+  padding: 1em;
+  border-radius: 1em;
+  background-color: lavender;
+  font-size: 2em;
+}
