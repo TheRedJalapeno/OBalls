@@ -48,8 +48,8 @@ function initApp() {
 
   var objects = [
       { radius: 20, mass: 1, sound: 'sounds/marble1.mp3', image: 'images/marble.png', className: 'marble' },
-      { radius: 50, mass: 2, sound: 'sounds/billiard1.mp3', image: 'images/billiard.png', className: 'billiard' },
-      { radius: 30, mass: .5, sound: 'sounds/pingpong1.mp3', image: 'images/pingpong.png', className: 'pingpong' },
+      { radius: 50, mass: 3, sound: 'sounds/billiard1.mp3', image: 'images/billiard.png', className: 'billiard' },
+      { radius: 30, mass: .3, sound: 'sounds/pingpong1.mp3', image: 'images/pingpong.png', className: 'pingpong' },
   ];
 
   var soundCache = {};
@@ -79,24 +79,39 @@ function initApp() {
           }
       });
 
+// CREATE THE FIRST BALLS
       objects.forEach(function(obj) {
-          var circle = Physics.body('circle', {
-              x: obj.radius + Math.random() * (window.innerWidth - 2 * obj.radius),
-              y: obj.radius + Math.random() * (window.innerHeight - 2 * obj.radius),
-              vx: Math.random(),
-              vy: Math.random(),
-              radius: obj.radius,
-              mass: obj.mass,
-              restitution: 0.8,
-              styles: {
-                  fillStyle: '#d33682',
-                  angleIndicator: '#751b4b'
-              },
-              sound: obj.sound,
-              view: imageCanvasCache[obj.image] || null,
-          });
-          world.add(circle);
-      });
+        var circle = Physics.body('circle', {
+            x: obj.radius + Math.random() * (window.innerWidth - 2 * obj.radius),
+            y: obj.radius + Math.random() * (window.innerHeight - 2 * obj.radius),
+            vx: Math.random(),
+            vy: Math.random(),
+            radius: obj.radius,
+            mass: obj.mass,
+            restitution: 0.8,
+            styles: {
+                fillStyle: '#d33682',
+                angleIndicator: '#751b4b'
+            },
+            sound: obj.sound
+        });
+        
+        if (obj.image) {
+            var img = new Image();
+            img.onload = function() {
+                var canvas = document.createElement('canvas');
+                canvas.width = obj.radius * 2;
+                canvas.height = obj.radius * 2;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                circle.view = canvas;
+            };
+            img.src = obj.image;
+        }
+    
+        world.add(circle);
+    });
+    
 
       }).catch(error => {
         console.error("Error loading images:", error);

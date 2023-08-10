@@ -34,3 +34,18 @@ button {
 .marble {
   z-index: 1;
 }
+
+div.guidance {
+  font-family: sans-serif;
+  font-size: 22px;
+  color: rgba(0,0,0,0.6);
+  margin: 3em;
+  position: absolute;
+  top: 0px;
+  z-index: 1;
+}
+
+div.guidance img, div.guidance p {
+  display: block;
+  margin: auto;
+}
