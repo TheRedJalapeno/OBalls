@@ -5,7 +5,23 @@ document.getElementById('startApp').addEventListener('click', function() {
 
 window.addEventListener('resize', function() {
   var viewportBounds = Physics.aabb(0, 0, viewportElement.clientWidth, viewportElement.clientHeight);
+  // update any physics behaviors or properties that depend on these bounds
 });
+
+// This function returns a promise that resolves when the image is loaded
+function loadImage(src) {
+    return new Promise((resolve, reject) => {
+        var img = new Image();
+        img.onload = function() {
+            resolve(img);
+        };
+        img.onerror = function() {
+            reject(new Error("Failed to load image at " + src));
+        };
+        img.src = src;
+    });
+}
+
 
 
 function initApp() {
@@ -46,39 +62,46 @@ function initApp() {
   });
 
   var imageCanvasCache = {};
-  objects.forEach(function(obj) {
-      if (obj.image) {
-          var img = new Image();
-          img.onload = function() {
-              var canvas = document.createElement('canvas');
-              canvas.width = obj.radius * 2;
-              canvas.height = obj.radius * 2;
-              var ctx = canvas.getContext('2d');
-              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-              imageCanvasCache[obj.image] = canvas;
-          };
-          img.src = obj.image;
-      }
-  });
 
-  objects.forEach(function(obj) {
-      var circle = Physics.body('circle', {
-          x: obj.radius + Math.random() * (window.innerWidth - 2 * obj.radius),
-          y: obj.radius + Math.random() * (window.innerHeight - 2 * obj.radius),
-          vx: Math.random(),
-          vy: Math.random(),
-          radius: obj.radius,
-          mass: obj.mass,
-          restitution: 0.8,
-          styles: {
-              fillStyle: '#d33682',
-              angleIndicator: '#751b4b'
-          },
-          sound: obj.sound,
-          view: imageCanvasCache[obj.image] || null,
+  Promise.all(objects.map(obj => loadImage(obj.image))).then(() => {
+      objects.forEach(function(obj) {
+          if (obj.image) {
+              var img = new Image();
+              img.onload = function() {
+                  var canvas = document.createElement('canvas');
+                  canvas.width = obj.radius * 2;
+                  canvas.height = obj.radius * 2;
+                  var ctx = canvas.getContext('2d');
+                  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                  imageCanvasCache[obj.image] = canvas;
+              };
+              img.src = obj.image;
+          }
       });
-      world.add(circle);
-  });
+
+      objects.forEach(function(obj) {
+          var circle = Physics.body('circle', {
+              x: obj.radius + Math.random() * (window.innerWidth - 2 * obj.radius),
+              y: obj.radius + Math.random() * (window.innerHeight - 2 * obj.radius),
+              vx: Math.random(),
+              vy: Math.random(),
+              radius: obj.radius,
+              mass: obj.mass,
+              restitution: 0.8,
+              styles: {
+                  fillStyle: '#d33682',
+                  angleIndicator: '#751b4b'
+              },
+              sound: obj.sound,
+              view: imageCanvasCache[obj.image] || null,
+          });
+          world.add(circle);
+      });
+
+      }).catch(error => {
+        console.error("Error loading images:", error);
+      });
+
 
   world.add(Physics.behavior('body-collision-detection'));
   world.add(Physics.behavior('sweep-prune'));

@@ -4,10 +4,11 @@ body, html {
   width: 100%;
   height: auto;
   overflow: hidden;
+  background-image: url('images/background_green.jpg');
+  background-size: cover;
 }
 
 div.main {
-  
   display: block;
   width: 100vw;
   height: 100vh;
@@ -16,8 +17,8 @@ div.main {
 
 #viewport {
   display: block;
-  width: 100%;
-  background: #eee;
+  width: 100vw;
+  height: 100vh;
   aspect-ratio: auto;
 }
 
