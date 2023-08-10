@@ -110,5 +110,45 @@ function initApp() {
     document.addEventListener('keyup', function() {
         world.remove(world._behaviors.pop());
     });
+
+    
+// ----------------------------------------    
+// ----------------------------------------
+// CREATE NEW BALLS
+    document.getElementById('viewport').addEventListener('click', function(event) {
+      // Get the clicked location
+      var x = event.offsetX;
+      var y = event.offsetY;
+  
+      // Randomly select an object type from the objects array
+      var randomObject = objects[Math.floor(Math.random() * objects.length)];
+  
+      // Assign random velocities (You can adjust the range for randomness as needed)
+      var vx = (Math.random() - 0.5) * 2; // random between -1 and 1
+      var vy = (Math.random() - 0.5) * 2; // random between -1 and 1
+  
+      // Create the circle using the selected properties and the random velocities
+      var circle = Physics.body('circle', {
+          x: x,
+          y: y,
+          vx: vx,
+          vy: vy,
+          radius: randomObject.radius,
+          mass: randomObject.mass,
+          restitution: 0.8,
+          styles: {
+              fillStyle: '#d33682',
+              angleIndicator: '#751b4b'
+          },
+          sound: randomObject.sound
+      });
+  
+      // Add the new circle to the world
+      world.add(circle);
+  });
+  
+  
+  
+  
   }
 
