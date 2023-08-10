@@ -29,3 +29,7 @@ button {
   background-color: lavender;
   font-size: 2em;
 }
+
+.marble {
+  z-index: 1;
+}

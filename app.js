@@ -5,7 +5,6 @@ document.getElementById('startApp').addEventListener('click', function() {
 
 window.addEventListener('resize', function() {
   var viewportBounds = Physics.aabb(0, 0, viewportElement.clientWidth, viewportElement.clientHeight);
-  // update any physics behaviors or properties that depend on these bounds
 });
 
 
@@ -13,121 +12,143 @@ function initApp() {
   var canvas = document.getElementById('viewport');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  
+
   var viewport = document.getElementById('viewport');
   viewport.width = window.innerWidth;
   viewport.height = window.innerHeight;
-  
+
   var world = Physics();
 
   var viewportElement = document.getElementById('viewport');
   var viewportBounds = Physics.aabb(0, 0, viewportElement.clientWidth, viewportElement.clientHeight);
-  
-  console.log(document.getElementById('viewport').width, document.getElementById('viewport').height);
+
   var renderer = Physics.renderer('canvas', {
-        el: 'viewport',
-        width: window.innerWidth,
-        height: window.innerHeight,
-        meta: false,
-    });
-    world.add(renderer);
+      el: 'viewport',
+      width: window.innerWidth,
+      height: window.innerHeight,
+      meta: false,
+  });
+  world.add(renderer);
 
-    // create objects with properties
-    var objects = [
-        { radius: 25, mass: 1, sound: 'sounds/marble_sound.mp3' },
-        { radius: 50, mass: 2, sound: 'sounds/billiard_sound.mp3' },
-        // ... add more object types
-    ];
+  var objects = [
+      { radius: 20, mass: 1, sound: 'sounds/marble1.mp3', image: 'images/marble.png', className: 'marble' },
+      { radius: 50, mass: 2, sound: 'sounds/billiard1.mp3', image: 'images/billiard.png', className: 'billiard' },
+      { radius: 30, mass: .5, sound: 'sounds/pingpong1.mp3', image: 'images/pingpong.png', className: 'pingpong' },
+  ];
 
-    objects.forEach(function(obj) {
+  var soundCache = {};
+  objects.forEach(function(obj) {
+      var sound = new Howl({
+          src: [obj.sound],
+          preload: true
+      });
+      soundCache[obj.sound] = sound;
+  });
+
+  var imageCanvasCache = {};
+  objects.forEach(function(obj) {
+      if (obj.image) {
+          var img = new Image();
+          img.onload = function() {
+              var canvas = document.createElement('canvas');
+              canvas.width = obj.radius * 2;
+              canvas.height = obj.radius * 2;
+              var ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              imageCanvasCache[obj.image] = canvas;
+          };
+          img.src = obj.image;
+      }
+  });
+
+  objects.forEach(function(obj) {
       var circle = Physics.body('circle', {
-        x: obj.radius + Math.random() * (window.innerWidth - 2 * obj.radius),
-        y: obj.radius + Math.random() * (window.innerHeight - 2 * obj.radius),
-            vx: Math.random(),
-            vy: Math.random(),
-            radius: obj.radius,
-            mass: obj.mass,
-            restitution: 0.8,
-            styles: {
-                fillStyle: '#d33682',
-                angleIndicator: '#751b4b'
-            },
-            sound: obj.sound
-        });
-        world.add(circle);
-    });
+          x: obj.radius + Math.random() * (window.innerWidth - 2 * obj.radius),
+          y: obj.radius + Math.random() * (window.innerHeight - 2 * obj.radius),
+          vx: Math.random(),
+          vy: Math.random(),
+          radius: obj.radius,
+          mass: obj.mass,
+          restitution: 0.8,
+          styles: {
+              fillStyle: '#d33682',
+              angleIndicator: '#751b4b'
+          },
+          sound: obj.sound,
+          view: imageCanvasCache[obj.image] || null,
+      });
+      world.add(circle);
+  });
 
-    world.add(Physics.behavior('body-collision-detection'));
-    world.add(Physics.behavior('sweep-prune'));
-    world.add(Physics.behavior('body-impulse-response'));
+  world.add(Physics.behavior('body-collision-detection'));
+  world.add(Physics.behavior('sweep-prune'));
+  world.add(Physics.behavior('body-impulse-response'));
+  
+  world.on('collisions:detected', function(data) {
+      data.collisions.forEach(function(collision) {
+          var sound = soundCache[collision.bodyA.sound];
+          if (sound) {
+              sound.play();
+          }
+      });
+  });
 
-    world.on('collisions:detected', function(data) {
-        data.collisions.forEach(function(collision) {
-            var sound = new Howl({
-                src: [collision.bodyA.sound]
-            });
-            sound.play();
-        });
-    });
+  world.add(Physics.behavior('edge-collision-detection', {
+      aabb: viewportBounds,
+      restitution: 0.99,
+      cof: 0.99
+  }));
 
-    world.add(Physics.behavior('edge-collision-detection', {
-        aabb: viewportBounds,
-        restitution: 0.99,
-        cof: 0.99
-    }));
+  Physics.util.ticker.on(function(time, dt) {
+      world.step(time);
+  });
 
-    Physics.util.ticker.on(function(time, dt) {
-        world.step(time);
-    });
+  Physics.util.ticker.start();
 
-    Physics.util.ticker.start();
+  world.on('step', function() {
+      world.render();
+  });
 
-    world.on('step', function() {
-        world.render();
-    });
+  var currentGravity = null;
+  document.addEventListener('keydown', function(event) {
+      var gravity;
+      switch (event.code) {
+          case 'KeyW':
+              gravity = Physics.behavior('constant-acceleration', { acc: { x: 0, y: -0.0004 } });
+              break;
+          case 'KeyA':
+              gravity = Physics.behavior('constant-acceleration', { acc: { x: -0.0004, y: 0 } });
+              break;
+          case 'KeyS':
+              gravity = Physics.behavior('constant-acceleration', { acc: { x: 0, y: 0.0004 } });
+              break;
+          case 'KeyD':
+              gravity = Physics.behavior('constant-acceleration', { acc: { x: 0.0004, y: 0 } });
+              break;
+          default:
+              return;
+      }
+      if (currentGravity) {
+          world.remove(currentGravity);
+      }
+      world.add(gravity);
+      currentGravity = gravity;
+  });
 
-    document.addEventListener('keydown', function(event) {
-        var gravity;
-        switch (event.code) {
-            case 'KeyW':
-                gravity = Physics.behavior('constant-acceleration', { acc: { x: 0, y: -0.0004 } });
-                break;
-            case 'KeyA':
-                gravity = Physics.behavior('constant-acceleration', { acc: { x: -0.0004, y: 0 } });
-                break;
-            case 'KeyS':
-                gravity = Physics.behavior('constant-acceleration', { acc: { x: 0, y: 0.0004 } });
-                break;
-            case 'KeyD':
-                gravity = Physics.behavior('constant-acceleration', { acc: { x: 0.0004, y: 0 } });
-                break;
-            default:
-                return;
-        }
-        world.add(gravity);
-    });
+  document.addEventListener('keyup', function() {
+      if (currentGravity) {
+          world.remove(currentGravity);
+          currentGravity = null;
+      }
+  });
 
-    document.addEventListener('keyup', function() {
-        world.remove(world._behaviors.pop());
-    });
-
-    
-// ----------------------------------------    
-// ----------------------------------------
-// CREATE NEW BALLS
-    document.getElementById('viewport').addEventListener('click', function(event) {
-      // Get the clicked location
+  document.getElementById('viewport').addEventListener('click', function(event) {
       var x = event.offsetX;
       var y = event.offsetY;
-  
-      // Randomly select an object type from the objects array
       var randomObject = objects[Math.floor(Math.random() * objects.length)];
-  
-      // Assign random velocities (You can adjust the range for randomness as needed)
-      var vx = (Math.random() - 0.5) * 2; // random between -1 and 1
-      var vy = (Math.random() - 0.5) * 2; // random between -1 and 1
-  
-      // Create the circle using the selected properties and the random velocities
+      var vx = (Math.random() - 0.5) * 2;
+      var vy = (Math.random() - 0.5) * 2;
+
       var circle = Physics.body('circle', {
           x: x,
           y: y,
@@ -140,15 +161,9 @@ function initApp() {
               fillStyle: '#d33682',
               angleIndicator: '#751b4b'
           },
-          sound: randomObject.sound
+          sound: randomObject.sound,
+          view: imageCanvasCache[randomObject.image] || null,
       });
-  
-      // Add the new circle to the world
       world.add(circle);
   });
-  
-  
-  
-  
-  }
-
+}
