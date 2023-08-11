@@ -147,6 +147,8 @@ function initApp() {
       world.render();
   });
 
+
+// GRAVITY CONTROLS 
 var currentGravity = null;
 // Gravity controls for keyboard
 document.addEventListener('keydown', function(event) {
@@ -174,6 +176,13 @@ document.addEventListener('keydown', function(event) {
     currentGravity = gravity;
 });
 
+document.addEventListener('keyup', function() {
+    if (currentGravity) {
+        world.remove(currentGravity);
+        currentGravity = null;
+    }
+});
+
 // Gravity controls for mobile
 if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', function(event) {
@@ -195,12 +204,6 @@ if (window.DeviceOrientationEvent) {
     });
 }
 
-  document.addEventListener('keyup', function() {
-      if (currentGravity) {
-          world.remove(currentGravity);
-          currentGravity = null;
-      }
-  });
 
   document.getElementById('viewport').addEventListener('click', function(event) {
       var x = event.offsetX;
