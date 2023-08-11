@@ -52,15 +52,45 @@ function initApp() {
       { radius: 30, mass: .3, sound: 'sounds/pingpong1.mp3', image: 'images/pingpong.png', className: 'pingpong' },
   ];
 
-  var soundCache = {};
-  objects.forEach(function(obj) {
-      var sound = new Howl({
-          src: [obj.sound],
-          preload: true
-      });
-      soundCache[obj.sound] = sound;
-  });
 
+// CACHE SOUNDS
+var soundCache = {};
+
+function loadSound(src) {
+    return new Promise((resolve, reject) => {
+        if (soundCache[src]) {
+            // Sound is already cached; resolve immediately
+            resolve();
+            return;
+        }
+        
+        const sound = new Howl({
+            src: [src],
+            preload: true,
+            html5: true,
+            onload: () => {
+                soundCache[src] = sound;
+                resolve();
+            },
+            onloaderror: (id, err) => {
+                console.error(`Error loading sound ${src}:`, err);
+                reject(err);
+            }
+        });
+    });
+}
+
+Promise.all(objects.map(obj => loadSound(obj.sound)))
+    .then(() => {
+        console.log("All sounds are preloaded and cached.");
+    })
+    .catch(err => {
+        console.error("There was an error preloading some sounds:", err);
+    });
+
+
+
+// CACHE IMAGES
   var imageCanvasCache = {};
 
   Promise.all(objects.map(obj => loadImage(obj.image))).then(() => {
@@ -78,6 +108,7 @@ function initApp() {
               img.src = obj.image;
           }
       });
+
 
 // CREATE THE FIRST BALLS
       objects.forEach(function(obj) {
@@ -127,7 +158,7 @@ function initApp() {
         aabb: viewportBounds,
         restitution: 0.99,
         cof: 0.99
-    }));
+      }));
       
       const MIN_IMPACT_VELOCITY = 0.08;   // Set this to a value that feels right
       const MAX_IMPACT_VELOCITY = 1.0;  // Values beyond this result in max volume
@@ -149,28 +180,28 @@ function initApp() {
             let impactVelocity = Math.sqrt(Math.pow(vAx - vBx, 2) + Math.pow(vAy - vBy, 2));
 
       
-        // Only play sound if impact velocity is above the minimum threshold
-        if (impactVelocity > MIN_IMPACT_VELOCITY) {
-            var sound = soundCache[collision.bodyA.sound];
-            if (sound) {
-                // Check cooldown
-                var now = Date.now();
-                if (lastPlayed[collision.bodyA.sound] && now - lastPlayed[collision.bodyA.sound] < COOLDOWN_PERIOD) {
-                    return;  // skip playing this sound due to cooldown
+            // Only play sound if impact velocity is above the minimum threshold
+            if (impactVelocity > MIN_IMPACT_VELOCITY) {
+                var sound = soundCache[collision.bodyA.sound];
+                if (sound) {
+                    // Check cooldown
+                    var now = Date.now();
+                    if (lastPlayed[collision.bodyA.sound] && now - lastPlayed[collision.bodyA.sound] < COOLDOWN_PERIOD) {
+                        return;  // skip playing this sound due to cooldown
+                    }
+
+                    // Scale the volume based on the impact velocity
+                    let volumeScale = Math.min(impactVelocity / MAX_IMPACT_VELOCITY, 1);  // Cap it at 1
+                    sound.volume(volumeScale);
+
+                    sound.play();
+
+                    // Update the last played timestamp
+                    lastPlayed[collision.bodyA.sound] = now;
                 }
-
-                // Scale the volume based on the impact velocity
-                let volumeScale = Math.min(impactVelocity / MAX_IMPACT_VELOCITY, 1);  // Cap it at 1
-                sound.volume(volumeScale);
-
-                sound.play();
-
-                // Update the last played timestamp
-                lastPlayed[collision.bodyA.sound] = now;
             }
-        }
-    });
-});
+        });
+      });
       
       Physics.util.ticker.on(function(time, dt) {
           world.step(time);
