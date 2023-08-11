@@ -147,7 +147,8 @@ function initApp() {
       world.render();
   });
 
-// Existing code for keyboard-based gravity controls
+var currentGravity = null;
+// Gravity controls for keyboard
 document.addEventListener('keydown', function(event) {
     var gravity;
     switch (event.code) {
@@ -173,7 +174,7 @@ document.addEventListener('keydown', function(event) {
     currentGravity = gravity;
 });
 
-// DeviceOrientation-based gravity controls for mobile devices
+// Gravity controls for mobile
 if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', function(event) {
         var gravity;
