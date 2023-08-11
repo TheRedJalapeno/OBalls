@@ -118,34 +118,60 @@ function initApp() {
       });
 
 
-  world.add(Physics.behavior('body-collision-detection'));
-  world.add(Physics.behavior('sweep-prune'));
-  world.add(Physics.behavior('body-impulse-response'));
-  
-  world.on('collisions:detected', function(data) {
-      data.collisions.forEach(function(collision) {
-          var sound = soundCache[collision.bodyA.sound];
-          if (sound) {
-              sound.play();
-          }
+// BALL ON BALL VIOLENCE
+      world.add(Physics.behavior('body-collision-detection'));
+      world.add(Physics.behavior('sweep-prune'));
+      world.add(Physics.behavior('body-impulse-response'));
+      world.add(Physics.behavior('edge-collision-detection', {
+        aabb: viewportBounds,
+        restitution: 0.99,
+        cof: 0.99
+    }));
+      
+      const MIN_IMPACT_VELOCITY = 0.08;   // Set this to a value that feels right
+      const MAX_IMPACT_VELOCITY = 1.0;  // Values beyond this result in max volume
+      
+      world.on('collisions:detected', function(data) {
+          data.collisions.forEach(function(collision) {
+      
+              // Check if the collision is with the edge of the viewport by checking the mass
+              if (collision.bodyA.mass === Infinity || collision.bodyB.mass === Infinity) {
+                  return; // Skip this collision if it involves the edge
+              }
+      
+              // Impact Velocity
+            let vAx = collision.bodyA.state.vel.x;
+            let vAy = collision.bodyA.state.vel.y;
+            let vBx = collision.bodyB.state.vel.x;
+            let vBy = collision.bodyB.state.vel.y;
+            let impactVelocity = Math.sqrt(Math.pow(vAx - vBx, 2) + Math.pow(vAy - vBy, 2));
+
+      
+              // Only play sound if impact velocity is above the minimum threshold
+              if (impactVelocity > MIN_IMPACT_VELOCITY) {
+                var sound = soundCache[collision.bodyA.sound];
+                if (sound) {
+                    // Scale the volume based on the impact velocity
+                    let volumeScale = Math.min(impactVelocity / MAX_IMPACT_VELOCITY, 1);  // Cap it at 1
+                    
+                    sound.volume(volumeScale).play();
+                }
+            }
+          });
       });
-  });
+      
+      Physics.util.ticker.on(function(time, dt) {
+          world.step(time);
+      });
+      
+      Physics.util.ticker.start();
+      
+      world.on('step', function() {
+          world.render();
+      });
+      
 
-  world.add(Physics.behavior('edge-collision-detection', {
-      aabb: viewportBounds,
-      restitution: 0.99,
-      cof: 0.99
-  }));
 
-  Physics.util.ticker.on(function(time, dt) {
-      world.step(time);
-  });
-
-  Physics.util.ticker.start();
-
-  world.on('step', function() {
-      world.render();
-  });
 
 
 // GRAVITY CONTROLS 
@@ -204,7 +230,7 @@ if (window.DeviceOrientationEvent) {
     });
 }
 
-
+// ADD NEW BALLS
   document.getElementById('viewport').addEventListener('click', function(event) {
       var x = event.offsetX;
       var y = event.offsetY;
