@@ -185,7 +185,7 @@ if (window.DeviceOrientationEvent) {
         var xAcc = event.gamma * sensitivity; // gamma is the left-to-right tilt in degrees
         var yAcc = event.beta * sensitivity;  // beta is the front-to-back tilt in degrees
 
-        gravity = Physics.behavior('constant-acceleration', { acc: { x: xAcc, y: -yAcc } });
+        gravity = Physics.behavior('constant-acceleration', { acc: { x: xAcc, y: yAcc } });
 
         if (currentGravity) {
             world.remove(currentGravity);

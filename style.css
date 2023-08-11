@@ -49,4 +49,6 @@ div.guidance img, div.guidance p {
   display: block;
   margin: auto;
   text-align: center;
+  pointer-events: none; 
+  user-select: none;    
 }
