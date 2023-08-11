@@ -147,31 +147,52 @@ function initApp() {
       world.render();
   });
 
-  var currentGravity = null;
-  document.addEventListener('keydown', function(event) {
-      var gravity;
-      switch (event.code) {
-          case 'KeyW':
-              gravity = Physics.behavior('constant-acceleration', { acc: { x: 0, y: -0.0004 } });
-              break;
-          case 'KeyA':
-              gravity = Physics.behavior('constant-acceleration', { acc: { x: -0.0004, y: 0 } });
-              break;
-          case 'KeyS':
-              gravity = Physics.behavior('constant-acceleration', { acc: { x: 0, y: 0.0004 } });
-              break;
-          case 'KeyD':
-              gravity = Physics.behavior('constant-acceleration', { acc: { x: 0.0004, y: 0 } });
-              break;
-          default:
-              return;
-      }
-      if (currentGravity) {
-          world.remove(currentGravity);
-      }
-      world.add(gravity);
-      currentGravity = gravity;
-  });
+// Existing code for keyboard-based gravity controls
+document.addEventListener('keydown', function(event) {
+    var gravity;
+    switch (event.code) {
+        case 'KeyW':
+            gravity = Physics.behavior('constant-acceleration', { acc: { x: 0, y: -0.0004 } });
+            break;
+        case 'KeyA':
+            gravity = Physics.behavior('constant-acceleration', { acc: { x: -0.0004, y: 0 } });
+            break;
+        case 'KeyS':
+            gravity = Physics.behavior('constant-acceleration', { acc: { x: 0, y: 0.0004 } });
+            break;
+        case 'KeyD':
+            gravity = Physics.behavior('constant-acceleration', { acc: { x: 0.0004, y: 0 } });
+            break;
+        default:
+            return;
+    }
+    if (currentGravity) {
+        world.remove(currentGravity);
+    }
+    world.add(gravity);
+    currentGravity = gravity;
+});
+
+// DeviceOrientation-based gravity controls for mobile devices
+if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', function(event) {
+        var gravity;
+
+        // Sensitivity adjustment factor (may need tweaking)
+        var sensitivity = 0.00005;
+
+        var xAcc = event.gamma * sensitivity; // gamma is the left-to-right tilt in degrees
+        var yAcc = event.beta * sensitivity;  // beta is the front-to-back tilt in degrees
+
+        gravity = Physics.behavior('constant-acceleration', { acc: { x: xAcc, y: -yAcc } });
+
+        if (currentGravity) {
+            world.remove(currentGravity);
+        }
+        world.add(gravity);
+        currentGravity = gravity;
+    });
+}
 
   document.addEventListener('keyup', function() {
       if (currentGravity) {
