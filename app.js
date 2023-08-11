@@ -119,6 +119,7 @@ function initApp() {
 
 
 // BALL ON BALL VIOLENCE
+      var lastPlayed = {};
       world.add(Physics.behavior('body-collision-detection'));
       world.add(Physics.behavior('sweep-prune'));
       world.add(Physics.behavior('body-impulse-response'));
@@ -130,7 +131,8 @@ function initApp() {
       
       const MIN_IMPACT_VELOCITY = 0.08;   // Set this to a value that feels right
       const MAX_IMPACT_VELOCITY = 1.0;  // Values beyond this result in max volume
-      
+      const COOLDOWN_PERIOD = 100;  // 100 milliseconds or 0.1 seconds
+
       world.on('collisions:detected', function(data) {
           data.collisions.forEach(function(collision) {
       
@@ -147,18 +149,28 @@ function initApp() {
             let impactVelocity = Math.sqrt(Math.pow(vAx - vBx, 2) + Math.pow(vAy - vBy, 2));
 
       
-              // Only play sound if impact velocity is above the minimum threshold
-              if (impactVelocity > MIN_IMPACT_VELOCITY) {
-                var sound = soundCache[collision.bodyA.sound];
-                if (sound) {
-                    // Scale the volume based on the impact velocity
-                    let volumeScale = Math.min(impactVelocity / MAX_IMPACT_VELOCITY, 1);  // Cap it at 1
-                    
-                    sound.volume(volumeScale).play();
+        // Only play sound if impact velocity is above the minimum threshold
+        if (impactVelocity > MIN_IMPACT_VELOCITY) {
+            var sound = soundCache[collision.bodyA.sound];
+            if (sound) {
+                // Check cooldown
+                var now = Date.now();
+                if (lastPlayed[collision.bodyA.sound] && now - lastPlayed[collision.bodyA.sound] < COOLDOWN_PERIOD) {
+                    return;  // skip playing this sound due to cooldown
                 }
+
+                // Scale the volume based on the impact velocity
+                let volumeScale = Math.min(impactVelocity / MAX_IMPACT_VELOCITY, 1);  // Cap it at 1
+                sound.volume(volumeScale);
+
+                sound.play();
+
+                // Update the last played timestamp
+                lastPlayed[collision.bodyA.sound] = now;
             }
-          });
-      });
+        }
+    });
+});
       
       Physics.util.ticker.on(function(time, dt) {
           world.step(time);
