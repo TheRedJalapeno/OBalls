@@ -4,8 +4,25 @@ body, html {
   width: 100%;
   height: auto;
   overflow: hidden;
-  background-image: url('images/background_green.jpg');
-  background-size: cover;
+  background-color: #008000; /* Green background */
+  background-image: url('images/bgtexture.jpg'); /* Path to your texture image */
+  background-blend-mode: multiply; /* Blends the texture with the color */
+  
+}
+
+p {
+  font-family: sans-serif;
+  font-size: 22px;
+  color: rgba(0,0,0,0.6);
+}
+h1 {
+  font-family: sans-serif;
+  font-size: 1.3em;
+  line-height: 1.1em;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+  display: block;
 }
 
 div.main {
@@ -22,33 +39,33 @@ div.main {
   aspect-ratio: auto;
 }
 
+
+/* Interface Options */
+
+div#gameSelect {
+  margin: 10% auto;
+  max-width: fit-content;
+  background-color: #b4f0bf;
+  border-radius: 25px;
+  border: 1px solid darkgray;
+  padding: 25px;
+}
+
+
 button {
-  margin: 350px auto;
+  margin: 20px auto;
   display: block;
   padding: 1em;
   border-radius: 1em;
-  background-color: lavender;
+  background-color: #adcced;
   font-size: 2em;
 }
 
-.marble {
-  z-index: 1;
+#startApp {
+  cursor: pointer;
 }
 
-div.guidance {
-  font-family: sans-serif;
-  font-size: 22px;
-  color: rgba(0,0,0,0.6);
-  margin: 3em;
-  position: absolute;
-  top: 0px;
-  z-index: 1;
-}
-
-div.guidance img, div.guidance p {
-  display: block;
-  margin: auto;
-  text-align: center;
-  pointer-events: none; 
-  user-select: none;    
+#startBallBlaster {
+  color: gray;
+  border: gray;
 }

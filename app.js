@@ -1,6 +1,6 @@
 document.getElementById('startApp').addEventListener('click', function() {
   initApp();
-  document.getElementById('startApp').style.display = 'none';
+  document.getElementById('gameSelect').style.display = 'none';
 });
 
 window.addEventListener('resize', function() {
