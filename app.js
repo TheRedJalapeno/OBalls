@@ -47,16 +47,16 @@ function initApp() {
   world.add(renderer);
 
   var objects = [
-      { radius: 20, mass: 1, sound: 'sounds/marble1.mp3', image: 'images/marble.png', className: 'marble' },
-      { radius: 50, mass: 3, sound: 'sounds/billiard1.mp3', image: 'images/billiard.png', className: 'billiard' },
-      { radius: 30, mass: .3, sound: 'sounds/pingpong1.mp3', image: 'images/pingpong.png', className: 'pingpong' },
-      { radius: 30, mass: .3, sound: 'sounds/clock.mp3', image: 'images/clock.png', className: 'clock' },
-      { radius: 30, mass: .3, sound: 'sounds/elmo.mp3', image: 'images/elmo.png', className: 'elmo' },
-      { radius: 30, mass: .3, sound: 'sounds/jalapeno.mp3', image: 'images/jalapeno.png', className: 'jalapeno' },
-      { radius: 30, mass: .3, sound: 'sounds/orange.mp3', image: 'images/orange.png', className: 'orange' },
-      { radius: 30, mass: .3, sound: 'sounds/tennis.mp3', image: 'images/tennis.png', className: 'tennis' },
-      { radius: 30, mass: .3, sound: 'sounds/blueball.mp3', image: 'images/blueball.png', className: 'blueball' },
-      { radius: 30, mass: .3, sound: 'sounds/ring.mp3', image: 'images/ring.png', className: 'ring' },
+      { radius: 10, mass: 1, sound: 'sounds/marble1.mp3', image: 'images/marble.png', className: 'marble' },
+      { radius: 35, mass: 3, sound: 'sounds/billiard1.mp3', image: 'images/billiard.png', className: 'billiard' },
+      { radius: 28, mass: .3, sound: 'sounds/pingpong1.mp3', image: 'images/pingpong.png', className: 'pingpong' },
+      { radius: 65, mass: 3, sound: 'sounds/clock.mp3', image: 'images/clock.png', className: 'clock' },
+      { radius: 40, mass: .5, sound: 'sounds/elmo.mp3', image: 'images/elmo.png', className: 'elmo' },
+      { radius: 23, mass: .3, sound: 'sounds/jalapeno.mp3', image: 'images/jalapeno.png', className: 'jalapeno' },
+      { radius: 45, mass: 1.5, sound: 'sounds/orange.mp3', image: 'images/orange.png', className: 'orange' },
+      { radius: 40, mass: 2, sound: 'sounds/tennis.mp3', image: 'images/tennis.png', className: 'tennis' },
+      { radius: 30, mass: .3, sound: 'sounds/pingpong.mp3', image: 'images/blueball.png', className: 'blueball' },
+      { radius: 40, mass: .7, sound: 'sounds/ring.mp3', image: 'images/ring.png', className: 'ring' },
   ];
 
 
