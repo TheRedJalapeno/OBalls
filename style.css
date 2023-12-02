@@ -57,7 +57,12 @@ div#gameSelect {
   user-select: none;
   padding: 25px;
 }
-
+#scoreboard {
+  display: none;
+  pointer-events: none;
+  user-select: none;
+  padding: 25px;
+}
 
 button {
   margin: 20px auto;

@@ -1,6 +1,7 @@
 document.getElementById('startApp').addEventListener('click', function() {
   initApp();
   document.getElementById('gameSelect').style.display = 'none';
+  document.getElementById('scoreboard').style.display = 'block';
 });
 
 window.addEventListener('resize', function() {
