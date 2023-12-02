@@ -14,17 +14,17 @@
 </head>
 <body>
   <div class="main">
-    <div class="guidance">
-      <p>Click for balls</p>
-      <img src="images/wasd_bk.png">
-      <p>WASD for gravity</p>
+    <div id="gameSelect">
+      <h1>Select your game mode</h1>
+      <button id="startApp">More Balls!</button>
+      <button id="startBallBlaster">Ball Blaster</button>
     </div>
-    <button id="startApp">Click for balls</button>
+    <div class="yourScore" id="objectCounter">Objects on Screen: 0</div>
     <canvas id="viewport"></canvas>
-  </div>
-
+  </div>    
+  
     <!-- About the author -->
-    <div id="about" style="position: fixed; bottom: 10px; left: 10px; z-index: 1000; font-family: sans-serif;">
+    <div id="about" style="position: fixed; bottom: 10px; left: 10px; z-index: 1000; font-family: sans-serif;user-select: none;">
       <div id="about-trigger" style="width: 45px; height: 45px; background-color: white; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 24px;">?</div>
       <div id="about-box" style="display: none; width: 300px; background-color: white; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); padding: 15px; position: absolute; bottom: 55px; left: 0;">
           <div style="max-height: 300px; overflow-y: auto;">
