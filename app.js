@@ -8,6 +8,11 @@ window.addEventListener('resize', function() {
   // update any physics behaviors or properties that depend on these bounds
 });
 
+var objectCount = 0; // Initialize the object counter
+function updateObjectCounter() {
+    document.getElementById('objectCounter').textContent = 'Your score: ' + objectCount;
+}
+
 // This function returns a promise that resolves when the image is loaded
 function loadImage(src) {
     return new Promise((resolve, reject) => {
@@ -23,7 +28,7 @@ function loadImage(src) {
 }
 
 
-
+// This is the entire app, Click for Balls
 function initApp() {
   var canvas = document.getElementById('viewport');
   canvas.width = window.innerWidth;
@@ -51,13 +56,18 @@ function initApp() {
       { radius: 35, mass: 3, sound: 'sounds/billiard1.mp3', image: 'images/billiard.png', className: 'billiard' },
       { radius: 28, mass: .3, sound: 'sounds/pingpong1.mp3', image: 'images/pingpong.png', className: 'pingpong' },
       { radius: 65, mass: 3, sound: 'sounds/clock.mp3', image: 'images/clock.png', className: 'clock' },
-      { radius: 40, mass: .5, sound: 'sounds/elmo.mp3', image: 'images/elmo.png', className: 'elmo' },
+      { radius: 40, mass: .5, image: 'images/elmo.png', className: 'elmo' },
       { radius: 23, mass: .3, sound: 'sounds/jalapeno.mp3', image: 'images/jalapeno.png', className: 'jalapeno' },
-      { radius: 45, mass: 1.5, sound: 'sounds/orange.mp3', image: 'images/orange.png', className: 'orange' },
-      { radius: 40, mass: 2, sound: 'sounds/tennis.mp3', image: 'images/tennis.png', className: 'tennis' },
+      { radius: 45, mass: 1.5, image: 'images/orange.png', className: 'orange' },
+      { radius: 40, mass: 2, image: 'images/tennis.png', className: 'tennis' },
       { radius: 30, mass: .3, sound: 'sounds/pingpong.mp3', image: 'images/blueball.png', className: 'blueball' },
       { radius: 40, mass: .7, sound: 'sounds/ring.mp3', image: 'images/ring.png', className: 'ring' },
   ];
+
+  objects.forEach(function(obj) {
+    objectCount++; // Increment the counter
+});
+updateObjectCounter(); // Update the display after initializing all balls        
 
 
 // CACHE SOUNDS
@@ -219,66 +229,7 @@ Promise.all(objects.map(obj => loadSound(obj.sound)))
       world.on('step', function() {
           world.render();
       });
-      
 
-
-
-
-// GRAVITY CONTROLS 
-var currentGravity = null;
-// Gravity controls for keyboard
-document.addEventListener('keydown', function(event) {
-    var gravity;
-    switch (event.code) {
-        case 'KeyW':
-            gravity = Physics.behavior('constant-acceleration', { acc: { x: 0, y: -0.0004 } });
-            break;
-        case 'KeyA':
-            gravity = Physics.behavior('constant-acceleration', { acc: { x: -0.0004, y: 0 } });
-            break;
-        case 'KeyS':
-            gravity = Physics.behavior('constant-acceleration', { acc: { x: 0, y: 0.0004 } });
-            break;
-        case 'KeyD':
-            gravity = Physics.behavior('constant-acceleration', { acc: { x: 0.0004, y: 0 } });
-            break;
-        default:
-            return;
-    }
-    if (currentGravity) {
-        world.remove(currentGravity);
-    }
-    world.add(gravity);
-    currentGravity = gravity;
-});
-
-document.addEventListener('keyup', function() {
-    if (currentGravity) {
-        world.remove(currentGravity);
-        currentGravity = null;
-    }
-});
-
-// Gravity controls for mobile
-if (window.DeviceOrientationEvent) {
-    window.addEventListener('deviceorientation', function(event) {
-        var gravity;
-
-        // Sensitivity adjustment factor (may need tweaking)
-        var sensitivity = 0.00005;
-
-        var xAcc = event.gamma * sensitivity; // gamma is the left-to-right tilt in degrees
-        var yAcc = event.beta * sensitivity;  // beta is the front-to-back tilt in degrees
-
-        gravity = Physics.behavior('constant-acceleration', { acc: { x: xAcc, y: yAcc } });
-
-        if (currentGravity) {
-            world.remove(currentGravity);
-        }
-        world.add(gravity);
-        currentGravity = gravity;
-    });
-}
 
 // ADD NEW BALLS
   document.getElementById('viewport').addEventListener('click', function(event) {
@@ -304,5 +255,8 @@ if (window.DeviceOrientationEvent) {
           view: imageCanvasCache[randomObject.image] || null,
       });
       world.add(circle);
+
+      objectCount++; // Increment the counter
+      updateObjectCounter(); // Update the display
   });
 }
