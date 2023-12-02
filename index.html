@@ -9,7 +9,7 @@
     <meta name="website" content="https://github.com/RobertDAllen/OBalls">
     <meta property="og:url" content="https://github.com/RobertDAllen/OBalls">
     <link rel="icon" href="images/billiard.png" type="image/png">
-    <title>OBalls!</title>
+    <title>oBalls!</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,8 +22,31 @@
     <button id="startApp">Click for balls</button>
     <canvas id="viewport"></canvas>
   </div>
+
+    <!-- About the author -->
+    <div id="about" style="position: fixed; bottom: 10px; left: 10px; z-index: 1000; font-family: sans-serif;">
+      <div id="about-trigger" style="width: 45px; height: 45px; background-color: white; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 24px;">?</div>
+      <div id="about-box" style="display: none; width: 300px; background-color: white; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); padding: 15px; position: absolute; bottom: 55px; left: 0;">
+          <div style="max-height: 300px; overflow-y: auto;">
+              <p class="headline" style="font-size: 1.1em; font-weight: bold; margin: 10px 0;">About the Author</p>
+              <p style="margin: 10px 0;">Robert is an absurdist, a futurist, and an absurd futurist. This site is made with love.</p>
+              <a href="https://github.com/RobertDAllen/">GitHub Profile</a>
+          </div>
+      </div>
+    </div>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7L69R3SYWR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-7L69R3SYWR');
+    </script>
+
     <script src="PhysicsJS/physicsjs-full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
