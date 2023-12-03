@@ -14,15 +14,35 @@
 </head>
 <body>
   <div class="main">
+    
     <div id="gameSelect">
       <h1>Select your game mode</h1>
-      <button id="startApp">More Balls!</button>
-      <button id="startBallBlaster">Ball Blaster</button>
+      <div class="menuGroup">
+        <button id="screensaver">Screensaver</button>
+      </div>
+      <hr>
+      <div class="menuGroup">
+        <button id="startBlitz">3 Second Blitz</button>
+        <div id="counterBlitz">Balls Collected This Time: 0</div>
+        <div id="highscoreBlitz">High Score: 0</div>
+      </div>
+      <hr>
+      <div class="menuGroup">
+        <button id="startBallBlaster">Ball Blaster</button>
+        <div id="counterBallBlaster">Balls Blasted This Time: 0</div>
+        <div id="highscoreBallBlaster">High Score: 0</div>
+      </div>
+
+      
     </div>
+    <!-- Game Display for Score and Timer-->
     <div class="yourScore" id="scoreboard">
       <div id="objectCounter">Objects on Screen: 0</div>
+      <div id="timerDisplay">00:00</div>
     </div>
+    <!-- Entire game viewport -->
     <canvas id="viewport"></canvas>
+  
   </div>    
   
     <!-- About the author -->
