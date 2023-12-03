@@ -4,15 +4,14 @@ body, html {
   width: 100%;
   height: auto;
   overflow: hidden;
-  background-color: #008000; /* Green background */
-  background-image: url('images/bgtexture.jpg'); /* Path to your texture image */
-  background-blend-mode: multiply; /* Blends the texture with the color */
-  
+  background-color: #008000; 
+  background-image: url('images/bgtexture.jpg');
 }
 
 * {
   font-family: sans-serif;
   color: rgba(0,0,0,0.6);
+  user-select: none;
 }
 p {
   font-size: 22px;
@@ -50,6 +49,16 @@ div#gameSelect {
   border-radius: 25px;
   border: 1px solid darkgray;
   padding: 25px;
+  transition: opacity 1s ease-in-out;
+}
+#gameSelect.visible {
+  display: block;
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}
+
+.menuGroup {
+  text-align: center;
 }
 
 .yourScore {
@@ -62,6 +71,10 @@ div#gameSelect {
   pointer-events: none;
   user-select: none;
   padding: 25px;
+  position: absolute;
+}
+#timerDisplay {
+  font-size: 24px;
 }
 
 button {
@@ -73,11 +86,13 @@ button {
   font-size: 2em;
 }
 
-#startApp {
+#screensaver {
   cursor: pointer;
 }
-
 #startBallBlaster {
   color: gray;
   border: gray;
+}
+#startBlitz {
+  cursor: pointer;
 }
