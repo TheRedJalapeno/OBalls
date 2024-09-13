@@ -27,7 +27,7 @@ let isShooting = false; // New variable for touch/click shooting
 let currentAlienSpeed = 0;
 
 // Icons for the enemies
-const enemyIcons = ['memory', 'bug_report', 'immunology', 'coronavirus'];
+const enemyIcons = ['memory', 'bug_report', 'open_with', 'coronavirus'];
 
 // Event Listeners
 document.addEventListener('keydown', (e) => keys[e.code] = true);

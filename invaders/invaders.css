@@ -18,12 +18,10 @@ body {
 
 #ui {
     position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
     text-align: center;
-    width: calc(100% - 20px);
-    /* Adjust width to fit within viewport */
+    margin: 15px;
+    text-align: left;
+    z-index: 100;
 }
 
 #score,
