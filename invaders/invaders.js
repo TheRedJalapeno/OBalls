@@ -27,7 +27,7 @@ let isShooting = false; // New variable for touch/click shooting
 let currentAlienSpeed = 0;
 
 // Icons for the enemies
-const enemyIcons = ['memory', 'bug_report', 'open_with', 'coronavirus'];
+const enemyIcons = ['memory', 'bug_report', 'token', 'coronavirus'];
 
 // Event Listeners
 document.addEventListener('keydown', (e) => keys[e.code] = true);
@@ -74,6 +74,7 @@ function handleMouseMove(e) {
 }
 
 function updatePlayerPosition(positionX) {
+    if (!player) return;  // Ensure player is initialized
     player.x = positionX - player.width / 2;
     // Ensure the player doesn't move off-screen
     if (player.x < 0) player.x = 0;
@@ -120,7 +121,17 @@ function createEnemies() {
     const offsetX = (canvas.width - (cols - 1) * spacingX) / 2;
     const offsetY = 60;
 
-    const baseSpeed = canvas.width / 300; // Base speed
+// ----- ----- ----- ----- 
+// ----- ----- ----- ----- 
+//
+//
+
+    const baseSpeed = canvas.width / 250; // Base speed 
+
+//
+//
+// ----- ----- ----- ----- 
+// ----- ----- ----- ----- 
 
     for (let row = 0; row < rows; row++) {
         for (let col = 0; col < cols; col++) {
@@ -286,4 +297,41 @@ function saveScore() {
     invadersScores.push({ name: playerName, score: score });
     localStorage.setItem('invadersScores', JSON.stringify(invadersScores));
     console.log(`Score saved: ${playerName} - ${score}`); // Console log
+}
+
+/*
+function saveScoreToFirebase(playerName, game, score) {
+    const scoreData = {
+        name: playerName,
+        game: game,
+        score: score,
+        date: new Date().toISOString()
+    };
+
+    // Get a reference to the "scores" node in the database
+    const scoresRef = firebase.database().ref('scores'); // Access ref() via firebase.database()
+
+    // Push the score to the database
+    push(scoresRef, scoreData)
+        .then(() => {
+            console.log("Score saved successfully to Firebase!");
+        })
+        .catch((error) => {
+            console.error("Error saving score to Firebase:", error);
+        });
+}
+*/
+function gameOver() {
+    gameRunning = false;
+    gameOverDisplay.style.display = 'block';
+    startButton.style.display = 'block';
+
+    let invadersScores = JSON.parse(localStorage.getItem('invadersScores')) || [];
+    const playerName = prompt('Game Over! Enter your name:', 'Player');
+    invadersScores.push({ name: playerName, score: score });
+    localStorage.setItem('invadersScores', JSON.stringify(invadersScores));
+    console.log(`Score saved: ${playerName} - ${score}`);
+    
+    // Save to Firebase
+    // saveScoreToFirebase(playerName, 'Invaders', score);
 }
