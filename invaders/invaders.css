@@ -1,0 +1,98 @@
+body {
+    margin: 0;
+    background-color: #000;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    color: #fff;
+}
+
+#gameCanvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+}
+
+#ui {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: calc(100% - 20px);
+    /* Adjust width to fit within viewport */
+}
+
+#score,
+#lives {
+    font-size: 2vw;
+    /* Responsive font size */
+    margin: 5px 0;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 18px;
+    margin-top: 20px;
+    cursor: pointer;
+    margin: auto;
+}
+
+button.back {
+    color: red;
+    background: black;
+    border: 1px solid gray;
+    padding: 5px;
+    padding: 3px 7px;
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Old versions of Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+a:visited {
+    color: red;
+}
+
+div {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Old versions of Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+
+#gameOver {
+    display: none;
+    font-size: 36px;
+    margin-top: 50px;
+}
+
+.material-icons {
+    font-size: 36px;
+    color: #fff;
+}
+
+#level {
+    font-size: 20px;
+    margin: 5px 0;
+}
